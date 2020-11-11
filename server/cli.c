@@ -133,7 +133,6 @@ void CLI_CreateCustomer(char* response, Bank* bank, char* password) {
     }
     else {
         unsigned int customer_id = DB_CreateCustomer(bank, password);
-        printf("Created new Customer (ID = %d)\n", customer_id);
         sprintf(response, "OK - Customer ID : %d", customer_id);
     }
 }
@@ -142,10 +141,8 @@ void CLI_CreateAccount(char* response, Bank* bank, unsigned int customer_id) {
     unsigned int acc_id = DB_CreateAccount(bank, customer_id);
     if (acc_id == 0)  // Customer already has 10 accounts
         sprintf(response, "KO - Can't create account for Customer %d (maximum limit reached)", customer_id);
-    else {
-        printf("Created new Account (ID = %d) for Customer %d\n", acc_id, customer_id);
+    else 
         sprintf(response, "OK - Account ID : %d", acc_id);
-    }
 }
 
 void CLI_ExecuteTransaction(char* response, Bank* bank, unsigned int customer_id, unsigned int account_id, long long *amount) {

@@ -64,8 +64,6 @@ int main(int argc, char* argv[]) {
         // read server response
         msg_size = recvfrom(socket_fd, response_buffer, sizeof(response_buffer), MSG_WAITALL, (struct sockaddr*)&server_addr, &len);
         printf("(%s)\n\n", response_buffer);
-        if (msg_size < 0)
-            printf("[INFO] Failed to read response from server %s:%u (received %d bytes)\n\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port), msg_size);
 
         if (exit == 1) {
             printf("[INFO] Closing connection\n");
