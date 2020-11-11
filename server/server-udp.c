@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
 
     struct sockaddr_in client_addr;
     unsigned int len = sizeof(client_addr);
-
+    int msg_size;
     while (1) {
         
         char cmd_buffer[255];
@@ -78,29 +78,27 @@ int main(int argc, char* argv[]) {
         // reset client addr
         bzero(&client_addr, sizeof(client_addr));
         // read client message
-        int msg_size = recvfrom(socket_fd, cmd_buffer, sizeof(cmd_buffer), MSG_WAITFORONE, (struct sockaddr*)&client_addr, &len);
+        msg_size = recvfrom(socket_fd, cmd_buffer, sizeof(cmd_buffer), MSG_WAITFORONE, (struct sockaddr*)&client_addr, &len);
         if (msg_size <= 0) {
-            printf("[INFO] Failed to read message from client %s:%u\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+            printf("[INFO] Failed to read message from client %s:%u\n\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
             continue;
         }
         printf("Client %s:%u :\n(%s)\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port), cmd_buffer);
 
         // split string received and store words in args array
-        int argn = 0;
         char* args[150];
-        char* token;
-        char* rest = cmd_buffer;
-        while( (token = strtok_r(rest, " ", &rest)) )
-            args[argn++] = token;
+        int argn = splitString(" ", cmd_buffer, args);
 
         char response[1024];
             
         exit = CLI_ExecCmd(argn, args, response, bank);
                 
         // respond to client
-        sendto(socket_fd, response, strlen(response), MSG_CONFIRM, (struct sockaddr*)&client_addr, len);
+        msg_size = sendto(socket_fd, response, strlen(response), MSG_CONFIRM, (struct sockaddr*)&client_addr, len);
         printf("> %s\n\n", response);
-
+        if (msg_size <= 0) {
+            printf("[INFO] Failed to send response to client %s:%u\n\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+        }
         if (exit == 1) {
             printf("[INFO] Client %s:%u exited\n\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
         }

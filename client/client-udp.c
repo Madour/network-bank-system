@@ -39,6 +39,7 @@ int main(int argc, char* argv[]) {
     char response_buffer[1024];
     int exit = 0;
     unsigned int len;
+    int msg_size;
     while(1) {
         // reset buffer
         bzero(cmd_buffer, sizeof(cmd_buffer));
@@ -52,16 +53,19 @@ int main(int argc, char* argv[]) {
         exit = (strcmp(cmd_buffer, "exit") == 0);
 
         // send to server
-        sendto(socket_fd, cmd_buffer, strlen(cmd_buffer), MSG_CONFIRM, (struct sockaddr*)&server_addr, sizeof(server_addr));
+        msg_size = sendto(socket_fd, cmd_buffer, strlen(cmd_buffer), MSG_CONFIRM, (struct sockaddr*)&server_addr, sizeof(server_addr));
+        if (msg_size <= 0) {
+            printf("[INFO] Failed to send message to server %s:%u. Please retry.\n\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
+            continue;
+        }
 
         // reset buffer
         bzero(response_buffer, sizeof(response_buffer));
         // read server response
-        int read_size = recvfrom(socket_fd, response_buffer, sizeof(response_buffer), MSG_WAITALL, (struct sockaddr*)&server_addr, &len);
-        if (read_size <= 0)
-            printf("[INFO] Failed to read response from server %s:%u\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
-        else
-            printf("(%s)\n\n", response_buffer);
+        msg_size = recvfrom(socket_fd, response_buffer, sizeof(response_buffer), MSG_WAITALL, (struct sockaddr*)&server_addr, &len);
+        printf("(%s)\n\n", response_buffer);
+        if (msg_size < 0)
+            printf("[INFO] Failed to read response from server %s:%u (received %d bytes)\n\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port), msg_size);
 
         if (exit == 1) {
             printf("[INFO] Closing connection\n");

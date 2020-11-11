@@ -22,4 +22,14 @@
  */
 int isUInt(char* str);
 
+/**
+ * @brief Split a given string by the separator char. Output stores the resulting array
+ * 
+ * @param separator 
+ * @param string 
+ * @param output 
+ * @return int Returns the number of strings in the ouput array
+ */
+int splitString(char* separator, char* string, char** output);
+
 #endif//UTILS_H

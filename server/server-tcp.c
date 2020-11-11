@@ -82,12 +82,13 @@ int main(int argc, char* argv[]) {
         
         char cmd_buffer[255];
         int close_connection = 0;
+        int msg_size = 0;
         while(1) {
             // reset buffer
             bzero(cmd_buffer, sizeof(cmd_buffer));
 
             // read client message
-            int msg_size = read(connection_fd, cmd_buffer, sizeof(cmd_buffer));
+            msg_size = read(connection_fd, cmd_buffer, sizeof(cmd_buffer));
             if (msg_size <= 0) {
                 printf("[INFO] Failed to read from client %s:%u\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
                 printf("[INFO] Closing connection.\n\n");
@@ -96,19 +97,19 @@ int main(int argc, char* argv[]) {
             printf("(%s)\n", cmd_buffer);
 
             // split string received and store words in args array
-            int argn = 0;
             char* args[150];
-            char *token, *rest = cmd_buffer;
-            while( (token = strtok_r(rest, " ", &rest)) )
-                args[argn++] = token;
+            int argn = splitString(" ", cmd_buffer, args);
 
             char response[1024];
             
             close_connection = CLI_ExecCmd(argn, args, response, bank);
                 
             // respond to client
-            write(connection_fd, response, strlen(response));
+            msg_size = write(connection_fd, response, strlen(response));
             printf("> %s\n\n", response);
+            if (msg_size <= 0) {
+                printf("[INFO] Failed to send response to client %s:%u\n\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+            }
 
             if (close_connection == 1) {
                 printf("[INFO] Client %s:%u closed connection\n\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
