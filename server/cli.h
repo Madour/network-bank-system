@@ -16,14 +16,6 @@
 #include "db.h"
 
 /**
- * @brief Check if the string is a correct numerical value
- * 
- * @param str String to check
- * @return int 1 if true, 0 if false
- */
-int isUInt(char* str);
-
-/**
  * @brief Check if password and customer_id are correct
  * 
  * @param response Response string

@@ -8,10 +8,17 @@
 #include <netdb.h> 
 #include <arpa/inet.h>
 
+#include "common/utils.h"
+
+
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         printf("Command usage : ./client <port_number>\n");
         return EXIT_SUCCESS;
+    }
+    if (!isUInt(argv[1])) {
+        fprintf(stderr, "Error : Argument <port_number> must be an unsigned int.\n");
+        return EXIT_FAILURE;
     }
     int port_number = atoi(argv[1]);
 

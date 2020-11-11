@@ -8,12 +8,19 @@
 #include <netdb.h> 
 #include <arpa/inet.h>
 
+#include "common/utils.h"
+
+
 int main(int argc, char* argv[]) {
     if (argc < 3) {
         printf("Command usage : ./client <host_name> <port_number>\n");
         return EXIT_SUCCESS;
     }
     char* host_name = argv[1];
+    if (!isUInt(argv[2])) {
+        fprintf(stderr, "Error : Argument <port_number> must be an unsigned int.\n");
+        return EXIT_FAILURE;
+    }
     int port_number = atoi(argv[2]);
 
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);

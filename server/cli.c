@@ -8,17 +8,10 @@
  * 
  */
 
-#include <errno.h>
-#include <limits.h>
+
 #include <string.h>
 #include "cli.h"
-
-int isUInt(char* str) {
-    errno = 0;
-    char* endptr;
-    strtoul(str, &endptr, 10);
-    return !((str == endptr) || (errno == ERANGE) || (*endptr != '\0'));
-}
+#include "common/utils.h"
 
 int CLI_LogCustomer(char* response, Bank* bank, unsigned int customer_id, const char* password) {
     DB_Error db_error = DB_AuthenticateCustomer(bank, customer_id, password);

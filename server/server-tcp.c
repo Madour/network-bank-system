@@ -8,11 +8,11 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 #include <arpa/inet.h>
-#include <errno.h>
-#include <limits.h>
 
 #include "db.h"
 #include "cli.h"
+#include "common/utils.h"
+
 
 struct sigaction default_sigint;
 
@@ -33,6 +33,10 @@ int main(int argc, char* argv[]) {
     if (argc < 2) {
         printf("Commande usage : ./server <port_number> \n");
         return EXIT_SUCCESS;
+    }
+    if (!isUInt(argv[1])) {
+        fprintf(stderr, "Error : Argument <port_number> must be an unsigned int.\n");
+        return EXIT_FAILURE;
     }
     int port_number = atoi(argv[1]);
 
