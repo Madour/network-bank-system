@@ -70,7 +70,9 @@ int CLI_ExecCmd(int argn, char** args, char* response, Bank* bank) {
 
     if (strcmp(args[0], "AJOUT") == 0 || strcmp(args[0], "RETRAIT") == 0) {
         if (argn < 5) {
-            strcpy(response, "KO - Usage : AJOUT <customer_id> <account_id> <password> <amount>");
+            char buffer[255];
+            sprintf(buffer, "KO - Usage : %s <customer_id> <account_id> <password> <amount>", args[0]);
+            strcpy(response, buffer);
             return 0;
         }
         if (!isUInt(args[1]) || !isUInt(args[2]) || !isUInt(args[4])) {

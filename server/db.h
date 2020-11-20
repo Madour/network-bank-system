@@ -44,8 +44,8 @@ typedef struct Customer {
 } Customer;
 
 typedef struct Bank {
-    Customer** customers;
-    Account** accounts;
+    Customer** customers; // pointeur vers le tableau de Customer*
+    Account** accounts; // // pointeur vers le tableau de Account*
     unsigned int nb_customers;
     unsigned int next_customer_id;
     unsigned int nb_accounts;

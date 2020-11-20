@@ -78,7 +78,7 @@ void CLI_CreateAccount(char* response, Bank* bank, unsigned int customer_id);
 void CLI_ExecuteTransaction(char* response, Bank* bank, unsigned int customer_id, unsigned int account_id, long long *amount);
 
 /**
- * @brief Get Account balance, print result it in response
+ * @brief Get Account balance, print result in response
  * 
  * @param response Response string
  * @param bank Pointer to the Bank database
